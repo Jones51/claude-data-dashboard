@@ -1,0 +1,13 @@
+{
+  "description": "Cada pedido da aba Pedidos da planilha Base_Pedidos_Focinho, lido ao vivo do Google Sheets.",
+  "source": {
+    "args": {
+      "range": "Pedidos!A1:O",
+      "spreadsheetId": "1lYjTab3dt5BSnB0h0ZII_VlD5hvcHUxm-N8GY-awAjA"
+    },
+    "connector": "Google Sheets",
+    "kind": "call",
+    "tool": "get_values"
+  },
+  "title": "Pedidos da Focinho"
+}

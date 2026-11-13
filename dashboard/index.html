@@ -1,0 +1,715 @@
+<meta name="dash-one-writer">
+<style>
+#dash-root{--dash-gutter:0}
+.fz{--fz-bg:#0a0e1c;--fz-fg:#eef1ff;--fz-muted:rgba(214,222,255,.62);--fz-faint:rgba(214,222,255,.42);--fz-line:rgba(255,255,255,.08);--fz-glass:rgba(255,255,255,.045);--fz-glass-b:rgba(255,255,255,.10);--fz-blue:#5b8cff;--fz-violet:#a77bff;--fz-ok:#6ee7b7;--fz-bad:#fb7185;
+  color-scheme:dark;font-family:var(--font-anthropic-sans);color:var(--fz-fg);display:flex;flex-direction:column;gap:clamp(18px,2.4vw,28px);
+  padding:clamp(16px,3vw,36px);min-height:100%;box-sizing:border-box;
+  background:
+    radial-gradient(1100px 620px at 8% -12%,rgba(91,140,255,.28),transparent 62%),
+    radial-gradient(900px 620px at 102% 4%,rgba(167,123,255,.24),transparent 60%),
+    radial-gradient(900px 600px at 50% 112%,rgba(76,110,245,.16),transparent 62%),
+    linear-gradient(180deg,#0b1022 0%,#0a0d1a 100%);}
+.fz *{box-sizing:border-box}
+.fz h1{font-weight:600;font-size:clamp(26px,3.4vw,38px);letter-spacing:-.02em;margin:0;background:linear-gradient(90deg,#ffffff 0%,#c9d6ff 45%,#c4a8ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.fz-lede{margin:10px 0 0;color:var(--fz-muted);max-width:76ch;line-height:1.6;font-size:var(--cds-font-size-body)}
+.fz-lede b{color:var(--fz-fg);font-weight:600}
+.fz-bar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-top:18px}
+.fz-bar label{font-size:var(--cds-font-size-caption);color:var(--fz-muted);text-transform:uppercase;letter-spacing:.08em}
+.fz .dash-select{background-color:rgba(255,255,255,.06);color:var(--fz-fg);border:1px solid var(--fz-glass-b);border-radius:10px}
+.fz .dash-select option{background-color:#141a30;color:var(--fz-fg)}
+.fz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.fz-card,.fz>section:not(#numeros),.fz>details{position:relative;background:linear-gradient(160deg,rgba(255,255,255,.075) 0%,rgba(255,255,255,.025) 100%);border:1px solid var(--fz-glass-b);border-radius:18px;backdrop-filter:blur(16px) saturate(140%);-webkit-backdrop-filter:blur(16px) saturate(140%);box-shadow:0 10px 40px rgba(3,6,20,.45),inset 0 1px 0 rgba(255,255,255,.10);overflow:hidden}
+.fz-card::before,.fz>section:not(#numeros)::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(420px 160px at 0% 0%,rgba(140,170,255,.13),transparent 70%)}
+.fz>section:not(#numeros){padding:clamp(16px,2.2vw,24px)}
+.fz>section:not(#numeros)>*{position:relative}
+.fz-card{padding:18px 20px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.fz-card>*{position:relative}
+#card-vendas::after,#card-lucro::after{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,var(--fz-blue),var(--fz-violet))}
+#card-vendas,#card-lucro{box-shadow:0 10px 40px rgba(3,6,20,.45),0 0 40px rgba(110,120,255,.14),inset 0 1px 0 rgba(255,255,255,.12)}
+#perdas .fz-card{background:rgba(255,255,255,.035);box-shadow:inset 0 1px 0 rgba(255,255,255,.06);backdrop-filter:none;-webkit-backdrop-filter:none}
+.fz-k{font-size:var(--cds-font-size-caption);color:var(--fz-muted);text-transform:uppercase;letter-spacing:.07em;line-height:1.35}
+.fz-v{font-weight:600;font-size:clamp(28px,3vw,38px);letter-spacing:-.025em;line-height:1.1;font-variant-numeric:tabular-nums;color:#fff}
+#card-vendas .fz-v,#card-lucro .fz-v{font-size:clamp(32px,3.6vw,44px);background:linear-gradient(90deg,#ffffff,#d5ddff 55%,#cdb6ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.fz-d{font-size:var(--cds-font-size-caption);color:var(--fz-faint);font-variant-numeric:tabular-nums}
+.fz-d b{font-weight:600}
+.fz .fz-good{color:var(--fz-ok)}
+.fz .fz-bad{color:var(--fz-bad)}
+.fz h2{font-size:var(--cds-font-size-heading);font-weight:600;letter-spacing:-.01em;margin:0 0 4px;color:var(--fz-fg)}
+.fz-sub{margin:0 0 16px;color:var(--fz-muted);font-size:var(--cds-font-size-caption)}
+.fz-chart{position:relative;min-height:260px}
+.fz-tip{position:absolute;pointer-events:none;background:rgba(16,21,42,.88);border:1px solid rgba(255,255,255,.14);box-shadow:0 12px 30px rgba(0,0,0,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:10px;padding:8px 12px;font-size:var(--cds-font-size-caption);white-space:nowrap;z-index:2;font-variant-numeric:tabular-nums;color:var(--fz-fg)}
+.fz-tip .fz-tip-h{font-weight:600;margin-bottom:3px}
+.fz-chart .tick text{fill:var(--fz-faint);font-size:var(--cds-font-size-caption)}
+.fz-legend{display:flex;flex-wrap:wrap;gap:16px;font-size:var(--cds-font-size-caption);color:var(--fz-muted);margin-bottom:10px;align-items:center}
+.fz-sw{display:inline-block;width:18px;height:6px;border-radius:3px;margin-right:6px;vertical-align:2px}
+.fz-head2{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:10px}
+.fz-scroll{overflow-x:auto}
+.fz-table{border-collapse:collapse;width:100%;font-size:var(--cds-font-size-body);font-variant-numeric:tabular-nums}
+.fz-table th{font-weight:500;font-size:var(--cds-font-size-caption);color:var(--fz-faint);text-transform:uppercase;letter-spacing:.06em;text-align:right;padding:10px 12px;border-bottom:1px solid var(--fz-line);white-space:nowrap;vertical-align:bottom}
+.fz-table th:first-child,.fz-table td:first-child{text-align:left}
+.fz-table td{padding:11px 12px;text-align:right;border-bottom:1px solid rgba(255,255,255,.05);white-space:nowrap;color:rgba(238,241,255,.88)}
+.fz-table td:first-child{color:#fff;font-weight:500}
+.fz-table tbody tr:last-child td{border-bottom:0}
+.fz-click tbody tr{cursor:pointer;transition:background .15s}
+.fz-click tbody tr:hover td{background:rgba(255,255,255,.04)}
+.fz-table tr.fz-sel td{background:linear-gradient(90deg,rgba(91,140,255,.18),rgba(167,123,255,.10));font-weight:600}
+.fz-table tr.fz-dim td{opacity:.45}
+.fz [data-dash-source-state=refreshing]{opacity:.5}
+.fz>details{padding:14px 20px;font-size:var(--cds-font-size-caption);color:var(--fz-muted)}
+.fz details summary{cursor:pointer;color:var(--fz-fg)}
+.fz details li{margin:6px 0}
+.fz details b{color:var(--fz-fg)}
+</style>
+
+<div class="fz">
+  <header id="topo">
+    <h1>Focinho · Controle de Vendas</h1>
+    <div class="fz-bar">
+      <label for="fz-canal">Canal</label>
+      <select id="fz-canal" class="dash-select" data-draw="canal" aria-label="Canal" data-source="canais"></select>
+    </div>
+  </header>
+
+  <section id="numeros" aria-label="Vendas e lucro">
+    <div class="fz-grid">
+      <div class="fz-card" id="card-vendas">
+        <span class="fz-k">Faturamento </span>
+        <span class="fz-v" data-draw="kpi" data-fmt="brl" data-source="kpis" data-field="receita" data-where="ano=2026">—</span>
+        <span class="fz-d"><b data-draw="kpi" data-fmt="var" data-source="kpis" data-field="receita" data-where="ano=var">—</b> · 2025: <span data-draw="kpi" data-fmt="brl" data-source="kpis" data-field="receita" data-where="ano=2025">—</span></span>
+      </div>
+      <div class="fz-card" id="card-lucro">
+        <span class="fz-k">Lucro </span>
+        <span class="fz-v" data-draw="kpi" data-fmt="brl" data-source="kpis" data-field="lucro" data-where="ano=2026">—</span>
+        <span class="fz-d"><b data-draw="kpi" data-fmt="var" data-source="kpis" data-field="lucro" data-where="ano=var">—</b> · 2025: <span data-draw="kpi" data-fmt="brl" data-source="kpis" data-field="lucro" data-where="ano=2025">—</span></span>
+      </div>
+      <div class="fz-card" id="card-margem">
+        <span class="fz-k">Margem</span>
+        <span class="fz-v" data-draw="kpi" data-fmt="pct" data-source="kpis" data-field="margem" data-where="ano=2026">—</span>
+        <span class="fz-d"><b data-draw="kpi" data-fmt="pp" data-source="kpis" data-field="margem" data-where="ano=var">—</b> · 2025: <span data-draw="kpi" data-fmt="pct" data-source="kpis" data-field="margem" data-where="ano=2025">—</span></span>
+      </div>
+      <div class="fz-card" id="card-pedidos">
+        <span class="fz-k">Pedidos entregues</span>
+        <span class="fz-v" data-draw="kpi" data-fmt="int" data-source="kpis" data-field="pedidos" data-where="ano=2026">—</span>
+        <span class="fz-d"><b data-draw="kpi" data-fmt="var" data-source="kpis" data-field="pedidos" data-where="ano=var">—</b> · 2025: <span data-draw="kpi" data-fmt="int" data-source="kpis" data-field="pedidos" data-where="ano=2025">—</span></span>
+      </div>
+      <div class="fz-card" id="card-ticket">
+        <span class="fz-k">Ticket médio</span>
+        <span class="fz-v" data-draw="kpi" data-fmt="brl" data-source="kpis" data-field="ticket" data-where="ano=2026">—</span>
+        <span class="fz-d"><b data-draw="kpi" data-fmt="var" data-source="kpis" data-field="ticket" data-where="ano=var">—</b> · 2025: <span data-draw="kpi" data-fmt="brl" data-source="kpis" data-field="ticket" data-where="ano=2025">—</span></span>
+      </div>
+    </div>
+  </section>
+
+  <section id="evolucao">
+    <div class="fz-head2">
+      <div>
+        <h2>Mês a mês</h2>
+        <p class="fz-sub">2025 inteiro como referência; 2026 até o último pedido da planilha.</p>
+      </div>
+      <select id="fz-metrica" class="dash-select" aria-label="Métrica do gráfico">
+        <option value="receita">Faturamento</option>
+        <option value="lucro">Lucro</option>
+      </select>
+    </div>
+    <div class="fz-legend"><span><i class="fz-sw" data-cor="1"></i>2026</span><span><i class="fz-sw" data-cor="0"></i>2025</span></div>
+    <div class="fz-chart" id="grafico-mensal" data-draw="mensal" data-source="mensal"></div>
+  </section>
+
+  <section id="perdas">
+    <h2>Onde o dinheiro escapa</h2>
+    <p class="fz-sub">Valor dos pedidos cancelados e devolvidos (fora do faturamento), desconto dado nos pedidos entregues e comissão paga ao marketplace, no mesmo período de cada ano.</p>
+    <div class="fz-grid">
+      <div class="fz-card" id="card-cancel">
+        <span class="fz-k">Cancelamentos</span>
+        <span class="fz-v" data-draw="kpi" data-fmt="brl" data-source="kpis" data-field="cancelado" data-where="ano=2026">—</span>
+        <span class="fz-d"><b data-draw="kpi" data-fmt="varneg" data-source="kpis" data-field="cancelado" data-where="ano=var">—</b> · 2025: <span data-draw="kpi" data-fmt="brl" data-source="kpis" data-field="cancelado" data-where="ano=2025">—</span></span>
+        <span class="fz-d"><span data-draw="kpi" data-fmt="pct" data-source="kpis" data-field="taxa_cancel" data-where="ano=2026">—</span> do valor pedido (<span data-draw="kpi" data-fmt="ppneg" data-source="kpis" data-field="taxa_cancel" data-where="ano=var">—</span>)</span>
+      </div>
+      <div class="fz-card" id="card-devol">
+        <span class="fz-k">Devoluções</span>
+        <span class="fz-v" data-draw="kpi" data-fmt="brl" data-source="kpis" data-field="devolvido" data-where="ano=2026">—</span>
+        <span class="fz-d"><b data-draw="kpi" data-fmt="varneg" data-source="kpis" data-field="devolvido" data-where="ano=var">—</b> · 2025: <span data-draw="kpi" data-fmt="brl" data-source="kpis" data-field="devolvido" data-where="ano=2025">—</span></span>
+        <span class="fz-d"><span data-draw="kpi" data-fmt="pct" data-source="kpis" data-field="taxa_dev" data-where="ano=2026">—</span> do valor pedido (<span data-draw="kpi" data-fmt="ppneg" data-source="kpis" data-field="taxa_dev" data-where="ano=var">—</span>)</span>
+      </div>
+      <div class="fz-card" id="card-desc">
+        <span class="fz-k">Descontos</span>
+        <span class="fz-v" data-draw="kpi" data-fmt="brl" data-source="kpis" data-field="desconto" data-where="ano=2026">—</span>
+        <span class="fz-d"><b data-draw="kpi" data-fmt="varneg" data-source="kpis" data-field="desconto" data-where="ano=var">—</b> · 2025: <span data-draw="kpi" data-fmt="brl" data-source="kpis" data-field="desconto" data-where="ano=2025">—</span></span>
+        <span class="fz-d"><span data-draw="kpi" data-fmt="pct" data-source="kpis" data-field="taxa_desc" data-where="ano=2026">—</span> do preço cheio (<span data-draw="kpi" data-fmt="ppneg" data-source="kpis" data-field="taxa_desc" data-where="ano=var">—</span>)</span>
+      </div>
+      <div class="fz-card" id="card-comissao">
+        <span class="fz-k">Comissão do marketplace</span>
+        <span class="fz-v" data-draw="kpi" data-fmt="brl" data-source="kpis" data-field="comissao" data-where="ano=2026">—</span>
+        <span class="fz-d"><b data-draw="kpi" data-fmt="varneg" data-source="kpis" data-field="comissao" data-where="ano=var">—</b> · 2025: <span data-draw="kpi" data-fmt="brl" data-source="kpis" data-field="comissao" data-where="ano=2025">—</span></span>
+        <span class="fz-d"><span data-draw="comissao">—</span> de cada venda entregue no Marketplace</span>
+      </div>
+    </div>
+    <div class="fz-legend" style="margin-top:var(--cds-gap-md)"><span><i class="fz-sw" data-cor="1"></i>2026</span><span><i class="fz-sw" data-cor="0"></i>2025</span></div>
+    <div class="fz-chart" id="grafico-perdas" data-draw="perdas" data-source="kpis" style="min-height:190px"></div>
+  </section>
+
+  <section id="canais">
+    <h2>Canais</h2>
+    <p class="fz-sub">Do canal que mais lucra para o que menos lucra, já descontada a comissão de <span data-draw="comissao">—</span> do Marketplace. Sempre mostra todos os canais: clique numa linha para filtrar a página; clique de novo para voltar a todos.</p>
+    <div class="fz-scroll">
+      <table class="fz-table fz-click" data-source="canais" data-row-key="canal">
+        <thead><tr>
+          <th data-field="canal">Canal</th>
+          <th data-field="lucro_2026">Lucro 2026</th>
+          <th data-field="var_lucro">Var. lucro</th>
+          <th data-field="margem">Margem</th>
+          <th data-field="lucro_pedido">Lucro/pedido</th>
+          <th data-field="receita_2026">Faturamento</th>
+          <th data-field="var_receita">Var. fat.</th>
+          <th data-field="comissao_2026">Comissão</th>
+          <th data-field="taxa_cancel">Cancel.</th>
+          <th data-field="taxa_dev">Devol.</th>
+          <th data-field="taxa_desc">Desconto</th>
+        </tr></thead>
+        <tbody data-draw="t-canais"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="categorias">
+    <h2>Categorias</h2>
+    <p class="fz-sub">Segue o filtro de canal.</p>
+    <div class="fz-scroll">
+      <table class="fz-table" data-source="categorias" data-row-key="categoria">
+        <thead><tr>
+          <th data-field="categoria">Categoria</th>
+          <th data-field="receita_2026">Faturamento</th>
+          <th data-field="receita_2025">Fat. 2025</th>
+          <th data-field="var_receita">Var.</th>
+          <th data-field="part">Part.</th>
+          <th data-field="lucro_2026">Lucro</th>
+          <th data-field="margem">Margem</th>
+          <th data-field="taxa_cancel">Cancel.</th>
+          <th data-field="taxa_dev">Devol.</th>
+          <th data-field="taxa_desc">Desconto</th>
+        </tr></thead>
+        <tbody data-draw="t-categorias"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <details id="definicoes">
+    <summary>Como cada número é calculado</summary>
+    <ul data-read="" lang="pt-BR">
+      <li><b>Período:</b> de 1º de janeiro até a data do último pedido de 2026 na planilha, comparado com as mesmas datas de 2025.</li>
+      <li><b>Faturamento:</b> soma do Valor Total (já com desconto) só dos pedidos com status Entregue.</li>
+      <li><b>Lucro:</b> faturamento menos o Custo desses pedidos e menos a comissão de <span data-draw="comissao">—</span> do Marketplace sobre o Valor Total de cada pedido entregue nesse canal. Não inclui frete, impostos ou despesas fixas.</li>
+      <li><b>Cancelamentos e devoluções:</b> ficam fora do faturamento e do lucro; aparecem somados à parte. A taxa é sobre o valor de todos os pedidos feitos no período.</li>
+      <li><b>Descontos:</b> soma da coluna Desconto nos pedidos entregues. A taxa é sobre o preço cheio (faturamento + descontos).</li>
+      <li><b>Lucro/pedido:</b> lucro do canal dividido pelo número de pedidos entregues.</li>
+      <li><b>Var.:</b> variação percentual sobre 2025. Para margem e taxas, a diferença é em pontos percentuais (p.p.).</li>
+      <li>Verde é bom e vermelho é ruim: perdas que sobem aparecem em vermelho.</li>
+    </ul>
+  </details>
+</div>
+
+<script>
+dash.loader('pedidos', {
+  description: 'Transforma as linhas da aba Pedidos em registros: o cabeçalho vira nome de coluna, os valores em reais viram números e a data fica no formato AAAA-MM-DD.',
+  fn: ({answer}) => {
+    const a = answer && answer.content && answer.content.values ? answer.content : answer;
+    const vals = a && a.values;
+    if (!Array.isArray(vals) || !vals.length) throw new Error('A planilha não devolveu linhas.');
+    const nomes = {'Pedido':'pedido','Data':'data','Canal':'canal','Categoria':'categoria','Produto':'produto','Quantidade':'quantidade','Preço Unitário (R$)':'preco','Desconto (R$)':'desconto','Valor Total (R$)':'valor','Custo (R$)':'custo','Cupom':'cupom','Pagamento':'pagamento','Região':'regiao','Cliente':'cliente','Status':'status'};
+    const numericas = new Set(['quantidade','preco','desconto','valor','custo']);
+    const cab = vals[0].map(h => nomes[String(h).trim()] || String(h).trim());
+    const num = (v) => {
+      if (v == null || v === '') return 0;
+      let s = String(v).replace(/R\$|\s/g, '');
+      if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
+      const n = Number(s);
+      return Number.isFinite(n) ? n : 0;
+    };
+    const dataISO = (v) => {
+      const s = String(v || '').trim();
+      let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (m) return m[1] + '-' + m[2] + '-' + m[3];
+      m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      if (m) return m[3] + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0');
+      return '';
+    };
+    const rows = [];
+    for (let i = 1; i < vals.length; i++) {
+      const r = {};
+      cab.forEach((k, j) => {
+        const v = vals[i][j];
+        r[k] = numericas.has(k) ? num(v) : k === 'data' ? dataISO(v) : (v == null ? '' : String(v).trim());
+      });
+      if (r.data) rows.push(r);
+    }
+    return {columns: cab, rows};
+  }
+});
+
+window.FZ_COMISSAO_MARKETPLACE = 0.15;
+
+dash.calc('janela', {
+  inputs: ['pedidos'],
+  title: 'Período comparado',
+  description: 'De 1º de janeiro até o último pedido de 2026, e as mesmas datas em 2025.',
+  fn: (pedidos) => {
+    let fim = '';
+    pedidos.forEach((r) => { if (r.data.startsWith('2026') && r.data > fim) fim = r.data; });
+    if (!fim) return [];
+    return [
+      {ano: '2026', inicio: '2026-01-01', fim},
+      {ano: '2025', inicio: '2025-01-01', fim: '2025' + fim.slice(4)}
+    ];
+  }
+});
+
+dash.calc('kpis', {
+  inputs: ['pedidos', 'janela'],
+  title: 'Faturamento, lucro e perdas no período',
+  description: 'Totais de 2026 e do mesmo período de 2025, no canal escolhido, e a variação entre eles (linha "var"). Faturamento e lucro contam só pedidos Entregues; o lucro desconta a comissão do marketplace.',
+  fn: (pedidos, janela) => {
+    const comissaoMarketplace = window.FZ_COMISSAO_MARKETPLACE; // regra da loja: 15% de cada venda no Marketplace
+    const canal = dash.params().canal || '';
+    const r1 = (x) => Math.round(x * 10) / 10;
+    const tipo = (s) => { s = String(s || '').trim().toLowerCase(); return s === 'entregue' ? 'e' : s.startsWith('cancel') ? 'c' : s.startsWith('devol') ? 'd' : 'o'; };
+    const out = ['2026', '2025'].map((ano) => {
+      const w = janela.find((j) => j.ano === ano);
+      const a = {receita: 0, custo: 0, comissao: 0, pedidos: 0, cancelado: 0, devolvido: 0, desconto: 0, total: 0};
+      if (w) pedidos.forEach((r) => {
+        if (r.data < w.inicio || r.data > w.fim) return;
+        if (canal && r.canal !== canal) return;
+        const t = tipo(r.status);
+        a.total += r.valor;
+        if (t === 'c') a.cancelado += r.valor;
+        else if (t === 'd') a.devolvido += r.valor;
+        else if (t === 'e') {
+          a.receita += r.valor; a.custo += r.custo; a.pedidos += 1; a.desconto += r.desconto;
+          if (String(r.canal).trim().toLowerCase() === 'marketplace') a.comissao += r.valor * comissaoMarketplace;
+        }
+      });
+      const lucro = a.receita - a.custo - a.comissao;
+      return {
+        ano,
+        receita: Math.round(a.receita),
+        lucro: Math.round(lucro),
+        comissao: Math.round(a.comissao),
+        margem: a.receita ? r1(lucro / a.receita * 100) : null,
+        pedidos: a.pedidos,
+        ticket: a.pedidos ? Math.round(a.receita / a.pedidos) : null,
+        cancelado: Math.round(a.cancelado),
+        devolvido: Math.round(a.devolvido),
+        desconto: Math.round(a.desconto),
+        perdas: Math.round(a.cancelado + a.devolvido + a.desconto),
+        taxa_cancel: a.total ? r1(a.cancelado / a.total * 100) : null,
+        taxa_dev: a.total ? r1(a.devolvido / a.total * 100) : null,
+        taxa_desc: (a.receita + a.desconto) ? r1(a.desconto / (a.receita + a.desconto) * 100) : null
+      };
+    });
+    const [n, o] = out;
+    const v = {ano: 'var'};
+    ['receita', 'lucro', 'comissao', 'pedidos', 'ticket', 'cancelado', 'devolvido', 'desconto', 'perdas'].forEach((k) => {
+      v[k] = n[k] != null && o[k] ? r1((n[k] / o[k] - 1) * 100) : null;
+    });
+    ['margem', 'taxa_cancel', 'taxa_dev', 'taxa_desc'].forEach((k) => {
+      v[k] = n[k] != null && o[k] != null ? r1(n[k] - o[k]) : null;
+    });
+    return [n, o, v];
+  }
+});
+
+dash.calc('mensal', {
+  inputs: ['pedidos', 'janela'],
+  title: 'Faturamento e lucro por mês',
+  description: 'Faturamento e lucro de cada mês de 2025 e de 2026 (até o último pedido), no canal escolhido. Só pedidos Entregues; o lucro desconta a comissão do marketplace.',
+  fn: (pedidos, janela) => {
+    const comissaoMarketplace = window.FZ_COMISSAO_MARKETPLACE; // regra da loja: 15% de cada venda no Marketplace
+    const canal = dash.params().canal || '';
+    const w = janela.find((j) => j.ano === '2026');
+    const fimMes = w ? Number(w.fim.slice(5, 7)) : 0;
+    const meses = [];
+    for (let m = 1; m <= 12; m++) meses.push({mes: m, receita_2025: 0, lucro_2025: 0, receita_2026: m <= fimMes ? 0 : null, lucro_2026: m <= fimMes ? 0 : null});
+    pedidos.forEach((r) => {
+      if (canal && r.canal !== canal) return;
+      if (String(r.status || '').trim().toLowerCase() !== 'entregue') return;
+      const ano = r.data.slice(0, 4);
+      if (ano !== '2025' && ano !== '2026') return;
+      if (ano === '2026' && w && r.data > w.fim) return;
+      const m = meses[Number(r.data.slice(5, 7)) - 1];
+      if (!m || m['receita_' + ano] == null) return;
+      const comissao = String(r.canal).trim().toLowerCase() === 'marketplace' ? r.valor * comissaoMarketplace : 0;
+      m['receita_' + ano] += r.valor;
+      m['lucro_' + ano] += r.valor - r.custo - comissao;
+    });
+    meses.forEach((m) => ['receita_2025', 'lucro_2025', 'receita_2026', 'lucro_2026'].forEach((k) => { if (m[k] != null) m[k] = Math.round(m[k]); }));
+    return meses;
+  }
+});
+
+dash.calc('canais', {
+  inputs: ['pedidos', 'janela'],
+  title: 'Resultado por canal',
+  description: 'Faturamento, comissão, lucro e perdas de cada canal no período de 2026, com o mesmo período de 2025. Só pedidos Entregues contam no faturamento e no lucro. Não segue o filtro de canal.',
+  fn: (pedidos, janela) => {
+    const comissaoMarketplace = window.FZ_COMISSAO_MARKETPLACE; // regra da loja: 15% de cada venda no Marketplace
+
+    const r1 = (x) => Math.round(x * 10) / 10;
+    const w26 = janela.find((j) => j.ano === '2026'), w25 = janela.find((j) => j.ano === '2025');
+    if (!w26 || !w25) return [];
+    const g = new Map();
+    let total26 = 0;
+    pedidos.forEach((r) => {
+
+      const ano = r.data >= w26.inicio && r.data <= w26.fim ? '26' : r.data >= w25.inicio && r.data <= w25.fim ? '25' : '';
+      if (!ano) return;
+      const k = r.canal || '(sem canal)';
+      if (!g.has(k)) g.set(k, {r26: 0, r25: 0, c26: 0, l25: 0, com26: 0, tot26: 0, can26: 0, dev26: 0, desc26: 0, n26: 0});
+      const a = g.get(k);
+      const s = String(r.status || '').trim().toLowerCase();
+      const comissao = String(r.canal).trim().toLowerCase() === 'marketplace' ? r.valor * comissaoMarketplace : 0;
+      if (ano === '25') { if (s === 'entregue') { a.r25 += r.valor; a.l25 += r.valor - r.custo - comissao; } return; }
+      a.tot26 += r.valor;
+      if (s.startsWith('cancel')) a.can26 += r.valor;
+      else if (s.startsWith('devol')) a.dev26 += r.valor;
+      else if (s === 'entregue') { a.r26 += r.valor; a.c26 += r.custo; a.com26 += comissao; a.desc26 += r.desconto; a.n26 += 1; total26 += r.valor; }
+    });
+    return [...g.entries()].map(([canal, a]) => {
+      const lucro = a.r26 - a.c26 - a.com26;
+      return {
+        canal,
+        receita_2026: Math.round(a.r26),
+        receita_2025: Math.round(a.r25),
+        var_receita: a.r25 ? r1((a.r26 / a.r25 - 1) * 100) : null,
+        part: total26 ? r1(a.r26 / total26 * 100) : null,
+        comissao_2026: Math.round(a.com26),
+        lucro_2026: Math.round(lucro),
+        lucro_2025: Math.round(a.l25),
+        var_lucro: a.l25 ? r1((lucro / a.l25 - 1) * 100) : null,
+        margem: a.r26 ? r1(lucro / a.r26 * 100) : null,
+        lucro_pedido: a.n26 ? Math.round(lucro / a.n26) : null,
+        taxa_cancel: a.tot26 ? r1(a.can26 / a.tot26 * 100) : null,
+        taxa_dev: a.tot26 ? r1(a.dev26 / a.tot26 * 100) : null,
+        taxa_desc: (a.r26 + a.desc26) ? r1(a.desc26 / (a.r26 + a.desc26) * 100) : null
+      };
+    }).sort((x, y) => y.lucro_2026 - x.lucro_2026);
+  }
+});
+
+dash.calc('categorias', {
+  inputs: ['pedidos', 'janela'],
+  title: 'Resultado por categoria',
+  description: 'Faturamento, lucro e perdas de cada categoria no período de 2026, com o mesmo período de 2025, no canal escolhido. Só pedidos Entregues contam no faturamento e no lucro.',
+  fn: (pedidos, janela) => {
+    const comissaoMarketplace = window.FZ_COMISSAO_MARKETPLACE; // regra da loja: 15% de cada venda no Marketplace
+    const canal = dash.params().canal || '';
+    const r1 = (x) => Math.round(x * 10) / 10;
+    const w26 = janela.find((j) => j.ano === '2026'), w25 = janela.find((j) => j.ano === '2025');
+    if (!w26 || !w25) return [];
+    const g = new Map();
+    let total26 = 0;
+    pedidos.forEach((r) => {
+      if (canal && r.canal !== canal) return;
+      const ano = r.data >= w26.inicio && r.data <= w26.fim ? '26' : r.data >= w25.inicio && r.data <= w25.fim ? '25' : '';
+      if (!ano) return;
+      const k = r.categoria || '(sem categoria)';
+      if (!g.has(k)) g.set(k, {r26: 0, r25: 0, c26: 0, l25: 0, com26: 0, tot26: 0, can26: 0, dev26: 0, desc26: 0, n26: 0});
+      const a = g.get(k);
+      const s = String(r.status || '').trim().toLowerCase();
+      const comissao = String(r.canal).trim().toLowerCase() === 'marketplace' ? r.valor * comissaoMarketplace : 0;
+      if (ano === '25') { if (s === 'entregue') { a.r25 += r.valor; a.l25 += r.valor - r.custo - comissao; } return; }
+      a.tot26 += r.valor;
+      if (s.startsWith('cancel')) a.can26 += r.valor;
+      else if (s.startsWith('devol')) a.dev26 += r.valor;
+      else if (s === 'entregue') { a.r26 += r.valor; a.c26 += r.custo; a.com26 += comissao; a.desc26 += r.desconto; a.n26 += 1; total26 += r.valor; }
+    });
+    return [...g.entries()].map(([categoria, a]) => {
+      const lucro = a.r26 - a.c26 - a.com26;
+      return {
+        categoria,
+        receita_2026: Math.round(a.r26),
+        receita_2025: Math.round(a.r25),
+        var_receita: a.r25 ? r1((a.r26 / a.r25 - 1) * 100) : null,
+        part: total26 ? r1(a.r26 / total26 * 100) : null,
+        comissao_2026: Math.round(a.com26),
+        lucro_2026: Math.round(lucro),
+        lucro_2025: Math.round(a.l25),
+        var_lucro: a.l25 ? r1((lucro / a.l25 - 1) * 100) : null,
+        margem: a.r26 ? r1(lucro / a.r26 * 100) : null,
+        lucro_pedido: a.n26 ? Math.round(lucro / a.n26) : null,
+        taxa_cancel: a.tot26 ? r1(a.can26 / a.tot26 * 100) : null,
+        taxa_dev: a.tot26 ? r1(a.dev26 / a.tot26 * 100) : null,
+        taxa_desc: (a.r26 + a.desc26) ? r1(a.desc26 / (a.r26 + a.desc26) * 100) : null
+      };
+    }).sort((x, y) => y.receita_2026 - x.receita_2026);
+  }
+});
+</script>
+
+<script>
+window.fz = (() => {
+  const loc = d3.formatLocale({decimal: ',', thousands: '.', grouping: [3], currency: ['R$ ', '']});
+  const brl = loc.format('$,.0f');
+  const int = loc.format(',.0f');
+  const d1 = loc.format(',.1f');
+  const curto = (v) => {
+    const a = Math.abs(v);
+    if (a >= 1e6) return 'R$ ' + d1(v / 1e6) + ' mi';
+    if (a >= 1e3) return 'R$ ' + loc.format(',.0f')(v / 1e3) + ' mil';
+    return brl(v);
+  };
+  const meses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+  const dataBR = (s) => { if (!s) return '—'; const p = s.split('-'); return Number(p[2]) + ' ' + meses[Number(p[1]) - 1]; };
+  const pct = (v) => v == null ? '—' : d1(v) + '%';
+  const varTxt = (v, pp) => v == null ? '—' : (v > 0 ? '+' : v < 0 ? '−' : '') + d1(Math.abs(v)) + (pp ? ' p.p.' : '%');
+  const tom = (el, v, bomSeSobe) => {
+    el.classList.remove('fz-good', 'fz-bad');
+    if (v == null || v === 0) return;
+    el.classList.add((v > 0) === bomSeSobe ? 'fz-good' : 'fz-bad');
+  };
+  const cores = () => ['rgba(190,202,255,.42)', '#7c93ff'];
+  return {brl, int, curto, meses, dataBR, pct, varTxt, tom, cores};
+})();
+
+document.querySelectorAll('.fz-sw').forEach((s) => { s.style.background = Number(s.dataset.cor) ? 'linear-gradient(90deg,#5b8cff,#a77bff)' : fz.cores()[0]; });
+
+const fzMetrica = document.getElementById('fz-metrica');
+if (fzMetrica) fzMetrica.addEventListener('change', () => dash.draw('mensal'));
+
+dash.draw('kpi', (el) => {
+  const d = dash.data('kpis');
+  const ano = (el.dataset.where || '').split('=')[1];
+  const campo = el.dataset.field;
+  const fmt = el.dataset.fmt;
+  const row = d.status === 'ok' && Array.isArray(d.data) ? d.data.find((r) => r.ano === ano) : null;
+  const v = row ? row[campo] : null;
+  el.classList.remove('fz-good', 'fz-bad');
+  if (!row || v == null) { el.textContent = '—'; return; }
+  if (fmt === 'brl') el.textContent = fz.brl(v);
+  else if (fmt === 'int') el.textContent = fz.int(v);
+  else if (fmt === 'pct') el.textContent = fz.pct(v);
+  else if (fmt === 'var' || fmt === 'varneg') { el.textContent = fz.varTxt(v); fz.tom(el, v, fmt === 'var'); }
+  else if (fmt === 'pp' || fmt === 'ppneg') { el.textContent = fz.varTxt(v, true); fz.tom(el, v, fmt === 'pp'); }
+  else el.textContent = String(v);
+});
+
+dash.draw('fim', (el) => {
+  const d = dash.data('janela');
+  const r = d.status === 'ok' && Array.isArray(d.data) ? d.data.find((x) => x.ano === '2026') : null;
+  el.textContent = r ? fz.dataBR(r.fim) + ' de 2026' : '—';
+});
+
+dash.draw('fim25', (el) => {
+  const d = dash.data('janela');
+  const r = d.status === 'ok' && Array.isArray(d.data) ? d.data.find((x) => x.ano === '2025') : null;
+  el.textContent = r ? fz.dataBR(r.fim) : '—';
+});
+
+dash.draw('comissao', (el) => {
+  el.textContent = String(Math.round(window.FZ_COMISSAO_MARKETPLACE * 1000) / 10).replace('.', ',') + '%';
+});
+
+dash.draw('canalnome', (el) => {
+  const c = dash.params().canal;
+  el.textContent = c ? 'canal ' + c : 'todos os canais';
+});
+
+dash.draw('canal', (sel) => {
+  const g = dash.data('canais');
+  const lista = g.status === 'ok' && Array.isArray(g.data) ? g.data.map((r) => r.canal) : [];
+  const atual = dash.params().canal || '';
+  if (atual && !lista.includes(atual)) lista.push(atual);
+  sel.replaceChildren(new Option('Todos os canais', ''), ...lista.map((c) => new Option(c, c)));
+  sel.value = atual;
+  sel.onchange = () => dash.setParams({canal: sel.value || null});
+});
+
+function fzTabela(tbody, id, chave, clicavel) {
+  const d = dash.data(id);
+  tbody.replaceChildren();
+  if (d.status !== 'ok' || !Array.isArray(d.data)) return;
+  const atual = dash.params().canal || '';
+  d.data.forEach((r) => {
+    const tr = document.createElement('tr');
+    const cel = (txt, cls) => { const td = document.createElement('td'); td.textContent = txt; if (cls) td.className = cls; tr.appendChild(td); return td; };
+    cel(r[chave]);
+    if (clicavel) {
+      cel(fz.brl(r.lucro_2026));
+      fz.tom(cel(fz.varTxt(r.var_lucro)), r.var_lucro, true);
+      cel(fz.pct(r.margem));
+      cel(r.lucro_pedido == null ? '—' : fz.brl(r.lucro_pedido));
+      cel(fz.brl(r.receita_2026));
+      fz.tom(cel(fz.varTxt(r.var_receita)), r.var_receita, true);
+      cel(fz.brl(r.comissao_2026));
+    } else {
+      cel(fz.brl(r.receita_2026));
+      cel(fz.brl(r.receita_2025));
+      fz.tom(cel(fz.varTxt(r.var_receita)), r.var_receita, true);
+      cel(fz.pct(r.part));
+      cel(fz.brl(r.lucro_2026));
+      cel(fz.pct(r.margem));
+    }
+    cel(fz.pct(r.taxa_cancel));
+    cel(fz.pct(r.taxa_dev));
+    cel(fz.pct(r.taxa_desc));
+    if (clicavel) {
+      if (atual && r[chave] === atual) tr.className = 'fz-sel';
+      else if (atual) tr.className = 'fz-dim';
+      tr.tabIndex = 0;
+      const escolher = () => dash.setParams({canal: atual === r[chave] ? null : r[chave]});
+      tr.addEventListener('click', escolher);
+      tr.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); escolher(); } });
+    }
+    tbody.appendChild(tr);
+  });
+}
+dash.draw('t-canais', (tb) => fzTabela(tb, 'canais', 'canal', true));
+dash.draw('t-categorias', (tb) => fzTabela(tb, 'categorias', 'categoria', false));
+
+dash.draw('mensal', (el) => {
+  const d = dash.data('mensal');
+  el.replaceChildren();
+  if (d.status !== 'ok' || !Array.isArray(d.data) || !d.data.length) {
+    el.textContent = d.status === 'error' ? 'Não foi possível carregar.' : '—';
+    return;
+  }
+  const sel = document.getElementById('fz-metrica');
+  const m = sel && sel.value === 'lucro' ? 'lucro' : 'receita';
+  const nomeM = m === 'lucro' ? 'Lucro' : 'Faturamento';
+  const rows = d.data;
+  const W = Math.max(260, el.clientWidth || 600), H = 260, mt = 18, mb = 26, mr = 16;
+  const max = d3.max(rows, (r) => Math.max(r[m + '_2025'] || 0, r[m + '_2026'] || 0)) || 1;
+  const y = d3.scaleLinear().domain([Math.min(0, d3.min(rows, (r) => Math.min(r[m + '_2025'] || 0, r[m + '_2026'] || 0))), max]).nice().range([H - mb, mt]);
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('height', H).attr('viewBox', `0 0 ${W} ${H}`)
+    .attr('role', 'img').attr('aria-label', `${nomeM} por mês em 2025 e 2026`);
+  const gy = svg.append('g').call(d3.axisLeft(y).ticks(5).tickFormat(fz.curto).tickSize(0));
+  gy.select('.domain').remove();
+  let ml = 0;
+  gy.selectAll('text').each(function () { ml = Math.max(ml, this.getComputedTextLength()); });
+  ml = Math.ceil(ml) + 10;
+  gy.attr('transform', `translate(${ml - 4},0)`).select('.domain').remove();
+  svg.insert('g', ':first-child').selectAll('line').data(y.ticks(5)).join('line')
+    .attr('x1', ml).attr('x2', W - mr).attr('y1', (t) => y(t)).attr('y2', (t) => y(t))
+    .style('stroke', 'rgba(255,255,255,.07)');
+  const x = d3.scalePoint().domain(rows.map((r) => r.mes)).range([ml + 10, W - mr - 10]);
+  const passo = W < 420 ? 3 : W < 640 ? 2 : 1;
+  svg.append('g').attr('transform', `translate(0,${H - mb})`)
+    .call(d3.axisBottom(x).tickFormat((v, i) => (i % passo ? '' : fz.meses[v - 1])).tickSize(0).tickPadding(8))
+    .call((g) => g.select('.domain').style('stroke', 'rgba(255,255,255,.14)'));
+  const defs = svg.append('defs');
+  const lg = defs.append('linearGradient').attr('id', 'fzLinha').attr('gradientUnits', 'userSpaceOnUse').attr('x1', ml).attr('x2', W - mr).attr('y1', 0).attr('y2', 0);
+  lg.append('stop').attr('offset', '0%').attr('stop-color', '#5b8cff');
+  lg.append('stop').attr('offset', '100%').attr('stop-color', '#a77bff');
+  const ag = defs.append('linearGradient').attr('id', 'fzArea').attr('x1', 0).attr('x2', 0).attr('y1', 0).attr('y2', 1);
+  ag.append('stop').attr('offset', '0%').attr('stop-color', '#7c7dff').attr('stop-opacity', 0.32);
+  ag.append('stop').attr('offset', '100%').attr('stop-color', '#7c7dff').attr('stop-opacity', 0);
+  const gl = defs.append('filter').attr('id', 'fzBrilho').attr('x', '-20%').attr('y', '-20%').attr('width', '140%').attr('height', '140%');
+  gl.append('feGaussianBlur').attr('stdDeviation', 4).attr('result', 'b');
+  const fm = gl.append('feMerge'); fm.append('feMergeNode').attr('in', 'b'); fm.append('feMergeNode').attr('in', 'SourceGraphic');
+  const k26 = m + '_2026';
+  const area = d3.area().defined((r) => r[k26] != null).x((r) => x(r.mes)).y0(y(Math.max(0, y.domain()[0]))).y1((r) => y(r[k26]));
+  svg.append('path').datum(rows).attr('d', area).style('fill', 'url(#fzArea)');
+  const series = [{k: m + '_2025', cor: fz.cores()[0], ano: '2025'}, {k: k26, cor: 'url(#fzLinha)', ano: '2026'}];
+  series.forEach((s) => {
+    const line = d3.line().defined((r) => r[s.k] != null).x((r) => x(r.mes)).y((r) => y(r[s.k]));
+    const p = svg.append('path').datum(rows).attr('d', line).attr('fill', 'none').style('stroke', s.cor).style('stroke-width', s.ano === '2026' ? 3 : 1.75).style('stroke-linejoin', 'round');
+    if (s.ano === '2026') p.attr('filter', 'url(#fzBrilho)'); else p.style('stroke-dasharray', '4 4');
+    svg.append('g').selectAll('circle').data(rows.filter((r) => r[s.k] != null)).join('circle')
+      .attr('cx', (r) => x(r.mes)).attr('cy', (r) => y(r[s.k])).attr('r', s.ano === '2026' ? 3.5 : 2.5).style('fill', s.ano === '2026' ? '#0b1022' : s.cor).style('stroke', s.ano === '2026' ? '#b9c6ff' : 'none').style('stroke-width', 2);
+  });
+  const ult = rows.filter((r) => r[m + '_2026'] != null).pop();
+  if (ult) {
+    const t = svg.append('text').attr('x', x(ult.mes)).attr('y', y(ult[m + '_2026']) - 9).attr('text-anchor', 'middle')
+      .style('fill', '#ffffff').style('font-weight', 600).style('font-size', 'var(--cds-font-size-caption)').text(fz.curto(ult[m + '_2026']));
+    const len = t.node().getComputedTextLength();
+    const cx = Math.min(Math.max(x(ult.mes), ml + len / 2), W - len / 2 - 2);
+    t.attr('x', cx);
+  }
+  const tip = d3.select(el).append('div').attr('class', 'fz-tip').style('display', 'none');
+  const guia = svg.append('line').attr('y1', mt).attr('y2', H - mb).style('stroke', 'rgba(167,123,255,.55)').style('stroke-dasharray', '3 3').style('display', 'none');
+  const mostrar = (ev) => {
+    const [px] = d3.pointer(ev, svg.node());
+    const esc = W / (svg.node().getBoundingClientRect().width || W);
+    const pxv = px;
+    const r = rows.reduce((a, b) => (Math.abs(x(b.mes) - pxv) < Math.abs(x(a.mes) - pxv) ? b : a));
+    guia.attr('x1', x(r.mes)).attr('x2', x(r.mes)).style('display', null);
+    tip.node().replaceChildren();
+    tip.append('div').attr('class', 'fz-tip-h').text(fz.meses[r.mes - 1] + ' · ' + nomeM);
+    tip.append('div').text('2026: ' + (r[m + '_2026'] == null ? '—' : fz.brl(r[m + '_2026'])));
+    tip.append('div').text('2025: ' + fz.brl(r[m + '_2025']));
+    if (r[m + '_2026'] != null && r[m + '_2025']) {
+      const v = (r[m + '_2026'] / r[m + '_2025'] - 1) * 100;
+      const dv = tip.append('div').text('Var.: ' + fz.varTxt(Math.round(v * 10) / 10));
+      fz.tom(dv.node(), v, true);
+    }
+    tip.style('display', null);
+    const box = el.getBoundingClientRect();
+    const sx = x(r.mes) / esc;
+    const tw = tip.node().offsetWidth;
+    let left = sx + 12;
+    if (left + tw > box.width) left = sx - tw - 12;
+    tip.style('left', Math.max(0, left) + 'px').style('top', '8px');
+  };
+  svg.append('rect').attr('x', ml).attr('y', mt).attr('width', W - mr - ml).attr('height', H - mb - mt)
+    .attr('fill', 'transparent')
+    .on('pointermove', mostrar).on('pointerdown', mostrar)
+    .on('pointerleave', () => { tip.style('display', 'none'); guia.style('display', 'none'); });
+});
+
+dash.draw('perdas', (el) => {
+  const d = dash.data('kpis');
+  el.replaceChildren();
+  if (d.status !== 'ok' || !Array.isArray(d.data) || !d.data.length) {
+    el.textContent = d.status === 'error' ? 'Não foi possível carregar.' : '—';
+    return;
+  }
+  const n = d.data.find((r) => r.ano === '2026'), o = d.data.find((r) => r.ano === '2025');
+  if (!n || !o) { el.textContent = '—'; return; }
+  const tipos = [{k: 'cancelado', nome: 'Cancelamentos'}, {k: 'devolvido', nome: 'Devoluções'}, {k: 'desconto', nome: 'Descontos'}];
+  const W = Math.max(260, el.clientWidth || 600), bar = 14, gap = 4, grupo = bar * 2 + gap + 18, mt = 4;
+  const H = mt + grupo * tipos.length;
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('height', H).attr('viewBox', `0 0 ${W} ${H}`)
+    .attr('role', 'img').attr('aria-label', 'Cancelamentos, devoluções e descontos: 2026 comparado com o mesmo período de 2025');
+  const rot = svg.append('g');
+  rot.selectAll('text').data(tipos).join('text').attr('x', 0).attr('y', (t, i) => mt + i * grupo + bar + gap / 2 + 4)
+    .style('fill', 'var(--fz-fg)').style('font-size', 'var(--cds-font-size-caption)').text((t) => t.nome);
+  let ml = 0;
+  rot.selectAll('text').each(function () { ml = Math.max(ml, this.getComputedTextLength()); });
+  ml = Math.ceil(ml) + 12;
+  const max = d3.max(tipos, (t) => Math.max(n[t.k] || 0, o[t.k] || 0)) || 1;
+  const lblW = 70;
+  const x = d3.scaleLinear().domain([0, max]).range([0, Math.max(40, W - ml - lblW)]);
+  const bg = svg.append('defs').append('linearGradient').attr('id', 'fzBarra').attr('x1', 0).attr('x2', 1).attr('y1', 0).attr('y2', 0);
+  bg.append('stop').attr('offset', '0%').attr('stop-color', '#5b8cff');
+  bg.append('stop').attr('offset', '100%').attr('stop-color', '#a77bff');
+  const tip = d3.select(el).append('div').attr('class', 'fz-tip').style('display', 'none');
+  const dados = [];
+  tipos.forEach((t, i) => {
+    [{ano: '2026', r: n, cor: 'url(#fzBarra)', off: 0}, {ano: '2025', r: o, cor: fz.cores()[0], off: bar + gap}].forEach((s) => {
+      dados.push({t, ano: s.ano, v: s.r[t.k] || 0, cor: s.cor, y: mt + i * grupo + s.off});
+    });
+  });
+  const esc = () => W / (svg.node().getBoundingClientRect().width || W);
+  const g = svg.append('g');
+  g.selectAll('rect').data(dados).join('rect')
+    .attr('x', ml).attr('y', (p) => p.y).attr('height', bar).attr('width', (p) => Math.max(1, x(p.v))).attr('rx', 4)
+    .style('fill', (p) => p.cor)
+    .on('pointermove pointerdown', (ev, p) => {
+      const vr = d.data.find((r) => r.ano === 'var');
+      tip.node().replaceChildren();
+      tip.append('div').attr('class', 'fz-tip-h').text(p.t.nome + ' · ' + p.ano);
+      tip.append('div').text(fz.brl(p.v));
+      if (p.ano === '2026' && vr && vr[p.t.k] != null) {
+        const dv = tip.append('div').text('Var.: ' + fz.varTxt(vr[p.t.k]));
+        fz.tom(dv.node(), vr[p.t.k], false);
+      }
+      tip.style('display', null);
+      const s = esc();
+      const left = Math.min((ml + x(p.v)) / s + 8, el.clientWidth - tip.node().offsetWidth);
+      tip.style('left', Math.max(0, left) + 'px').style('top', (p.y / s - 4) + 'px');
+    })
+    .on('pointerleave', () => tip.style('display', 'none'));
+  g.selectAll('text').data(dados).join('text')
+    .attr('x', (p) => ml + Math.max(1, x(p.v)) + 6).attr('y', (p) => p.y + bar - 3)
+    .style('fill', 'var(--fz-muted)').style('font-size', 'var(--cds-font-size-caption)')
+    .text((p) => fz.curto(p.v));
+});
+</script>
