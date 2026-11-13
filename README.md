@@ -87,9 +87,7 @@ Até 20/10/2026, comparado com o mesmo período de 2025:
 
 ## Projeto final
 
-Adicione os prints em [`images/`](images/) e referencie aqui, por exemplo:
+<img width="1445" height="751" alt="01" src="https://github.com/user-attachments/assets/3b536762-3b78-4f45-a416-7e634ffd64d7" />
 
-```markdown
-![Visão geral](images/visao-geral.png)
-![Canais e categorias](images/canais-categorias.png)
-```
+<img width="1443" height="864" alt="02" src="https://github.com/user-attachments/assets/83594bbb-2ade-49bd-ae2f-bd814bff1a4e" />
+
